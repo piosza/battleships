@@ -38,25 +38,21 @@ class Board:
             (+1, +1),
             (-1, +1),
         )
-        self.forbidden_offsets_4 = (
-            (-1, -1),
-            (0, -1),
-            (+1, -1),
-            (+2, -1),
-            (+3, -1),
-            (+4, -1),
-            (-1, 0),
-            (+4, 0),
-            (-1, +1),
-            (0, +1),
-            (+1, +1),
-            (+2, +1),
-            (+3, +1),
-            (+4, +1),
-        )
         self.allowed_places_2 = ((+1, 0), (0, +1), (-1, 0), (0, -1))
-        self.allowed_places_3_1 = ((+1, 0), (+2, 0), (+3, 0))
-        self.allowed_places_3_2 = ((0, +1), (0, +2), (0, +3))
+        self.allowed_places_3 = (
+            (+1, 0),
+            (0, +1),
+            (-1, 0),
+            (0, -1),
+            (0, -2),
+            (+2, 0),
+            (0, +2),
+            (-2, 0),
+            (-3, 0),
+            (0, -3),
+            (+3, 0),
+            (0, +3),
+        )
         # self.allowed_places_4 = (
         #     (+1, 0),
         #     (0, +1),
@@ -195,9 +191,6 @@ print(board1)
 print("computer deployment of ships ")
 board2 = Board()
 
-
-# 4
-
 i = 0
 while i < 1:
     x = int(random.randint(0, 9))
@@ -208,12 +201,9 @@ while i < 1:
     for allows in board2.allowed_places_4:
         xo, yo = allows
         board2.allowed_places.add((x + xo, y + yo))
-
-    #    print(board2.allowed_places)
+    print(board2.allowed_places)
     board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_4:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
+
     i += 1
 
 i = 0
@@ -222,7 +212,7 @@ while i < 1:
     y = int(random.randint(0, 9))
     if (x, y) in board2.forbiden_fields:
         continue
-    if (x, y) not in board2.allowed_places:
+    if i >= 1 and (x, y) not in board2.allowed_places:
         continue
     board2.state[y][x] = "4"
     board2.forbiden_fields.add((x, y))
@@ -235,7 +225,7 @@ while i < 1:
     y = int(random.randint(0, 9))
     if (x, y) in board2.forbiden_fields:
         continue
-    if (x, y) not in board2.allowed_places:
+    if i >= 1 and (x, y) not in board2.allowed_places:
         continue
     board2.state[y][x] = "4"
     board2.forbiden_fields.add((x, y))
@@ -248,185 +238,12 @@ while i < 1:
     y = int(random.randint(0, 9))
     if (x, y) in board2.forbiden_fields:
         continue
-    if (x, y) not in board2.allowed_places:
+    if i >= 1 and (x, y) not in board2.allowed_places:
         continue
     board2.state[y][x] = "4"
     board2.forbiden_fields.add((x, y))
 
     i += 1
-board2.allowed_places = set()
-
-# 3_1
-
-i = 0
-while i < 1:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-    if (x, y) in board2.forbiden_fields:
-        continue
-
-    board2.state[y][x] = "3"
-    for allows in board2.allowed_places_3_1:
-        xo, yo = allows
-        board2.allowed_places.add((x + xo, y + yo))
-    board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_3:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-i = 0
-while i < 1:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "3"
-    board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_3:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-
-i = 0
-while i < 1:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "3"
-
-    for offsets in board2.forbidden_offsets_3:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-        board2.forbiden_fields.add((x, y))
-    i += 1
-
-
-# 3_2
-
-i = 0
-while i < 1:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-    if (x, y) in board2.forbiden_fields:
-        continue
-
-    board2.state[y][x] = "3"
-    for allows in board2.allowed_places_3_2:
-        xo, yo = allows
-        board2.allowed_places.add((x + xo, y + yo))
-    board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_3:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-i = 0
-while i < 1:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "3"
-    board2.forbiden_fields.add((x, y))
-
-    i += 1
-
-i = 0
-while i < 1:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "3"
-    board2.forbiden_fields.add((x, y))
-
-    i += 1
-
-
-# 2
-
-i = 0
-while i < 2:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    print(x, y, board2.allowed_places)
-    print(board2)
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if i >= 1 and (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "2"
-
-    for allows in board2.allowed_places_2:
-        xo, yo = allows
-        board2.allowed_places.add((x + xo, y + yo))
-    board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_2:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-board2.allowed_places = set()
-
-i = 0
-while i < 2:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    print(x, y, board2.allowed_places)
-    print(board2)
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if i >= 1 and (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "2"
-
-    for allows in board2.allowed_places_2:
-        xo, yo = allows
-        board2.allowed_places.add((x + xo, y + yo))
-    board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_2:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-board2.allowed_places = set()
-
-i = 0
-while i < 2:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-
-    print(x, y, board2.allowed_places)
-    print(board2)
-    if (x, y) in board2.forbiden_fields:
-        continue
-    if i >= 1 and (x, y) not in board2.allowed_places:
-        continue
-    board2.state[y][x] = "2"
-
-    for allows in board2.allowed_places_2:
-        xo, yo = allows
-        board2.allowed_places.add((x + xo, y + yo))
-    board2.forbiden_fields.add((x, y))
-    for offsets in board2.forbidden_offsets_2:
-        xo, yo = offsets
-        board2.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-board2.allowed_places = set()
-
-# 1
 
 i = 0
 while i < 4:
@@ -443,4 +260,176 @@ while i < 4:
     i += 1
 
 
+i = 0
+while i < 2:
+    x = int(random.randint(0, 9))
+    y = int(random.randint(0, 9))
+
+    print(x, y, board2.allowed_places)
+    print(board2)
+    if (x, y) in board2.forbiden_fields:
+        continue
+    if i >= 1 and (x, y) not in board2.allowed_places:
+        continue
+    board2.state[y][x] = "2"
+
+    for allows in board2.allowed_places_2:
+        xo, yo = allows
+        board2.allowed_places.add((x + xo, y + yo))
+    board2.forbiden_fields.add((x, y))
+    for offsets in board2.forbidden_offsets_2:
+        xo, yo = offsets
+        board2.forbiden_fields.add((x + xo, y + yo))
+    i += 1
+board2.allowed_places = set()
+
+i = 0
+while i < 2:
+    x = int(random.randint(0, 9))
+    y = int(random.randint(0, 9))
+
+    print(x, y, board2.allowed_places)
+    print(board2)
+    if (x, y) in board2.forbiden_fields:
+        continue
+    if i >= 1 and (x, y) not in board2.allowed_places:
+        continue
+    board2.state[y][x] = "2"
+
+    for allows in board2.allowed_places_2:
+        xo, yo = allows
+        board2.allowed_places.add((x + xo, y + yo))
+    board2.forbiden_fields.add((x, y))
+    for offsets in board2.forbidden_offsets_2:
+        xo, yo = offsets
+        board2.forbiden_fields.add((x + xo, y + yo))
+    i += 1
+board2.allowed_places = set()
+
+i = 0
+while i < 2:
+    x = int(random.randint(0, 9))
+    y = int(random.randint(0, 9))
+
+    print(x, y, board2.allowed_places)
+    print(board2)
+    if (x, y) in board2.forbiden_fields:
+        continue
+    if i >= 1 and (x, y) not in board2.allowed_places:
+        continue
+    board2.state[y][x] = "2"
+
+    for allows in board2.allowed_places_2:
+        xo, yo = allows
+        board2.allowed_places.add((x + xo, y + yo))
+    board2.forbiden_fields.add((x, y))
+    for offsets in board2.forbidden_offsets_2:
+        xo, yo = offsets
+        board2.forbiden_fields.add((x + xo, y + yo))
+    i += 1
+board2.allowed_places = set()
+
+# i = 0
+# while i < 1:
+#     x = int(random.randint(0, 9))
+#     y = int(random.randint(0, 9))
+
+#     for allows in board2.allowed_places_3:
+#         xo, yo = allows
+#         board2.allowed_places.add((x + xo, y + yo))
+#     if (x, y) in board2.forbiden_fields:
+#         continue
+#     if i == 1 and (x, y) not in board2.allowed_places:
+#         continue
+#     if i >= 2 and (x, y) not in board2.allowed_places:
+#         continue
+
+#     board2.state[y][x] = "3"
+#     board2.forbiden_fields.add((x, y))
+#     for offsets in board2.forbidden_offsets_3:
+#         xo, yo = offsets
+#         board2.forbiden_fields.add((x + xo, y + yo))
+#     board2.allowed_places = set()
+# i += 1
+# i = 0
+# while i < 1:
+#     x = int(random.randint(0, 9))
+#     y = int(random.randint(0, 9))
+
+#     for allows in board2.allowed_places_3:
+#         xo, yo = allows
+#         board2.allowed_places.add((x + xo, y + yo))
+#     if (x, y) in board2.forbiden_fields:
+
+#         continue
+#     if i == 1 and (x, y) not in board2.allowed_places:
+
+#         continue
+#     if i >= 2 and (x, y) not in board2.allowed_places:
+#         continue
+
+#     board2.state[y][x] = "3"
+#     board2.forbiden_fields.add((x, y))
+#     for offsets in board2.forbidden_offsets_3:
+#         xo, yo = offsets
+#         board2.forbiden_fields.add((x + xo, y + yo))
+#         i = 0
+#         while i < 1:
+#             x = int(random.randint(0, 9))
+#             y = int(random.randint(0, 9))
+
+#         for allows in board2.allowed_places_3:
+#             xo, yo = allows
+#             board2.allowed_places.add((x + xo, y + yo))
+#         if (x, y) in board2.forbiden_fields:
+
+#             continue
+#         if i == 1 and (x, y) not in board2.allowed_places:
+
+#             continue
+#         if i >= 2 and (x, y) not in board2.allowed_places:
+#             continue
+
+#         board2.state[y][x] = "3"
+#         board2.forbiden_fields.add((x, y))
+#         for offsets in board2.forbidden_offsets_3:
+#             xo, yo = offsets
+#             board2.forbiden_fields.add((x + xo, y + yo))
+#         board2.allowed_places = set()
+#         i += 1
+# i = 0
+# while i < 3:
+#     x = int(random.randint(0, 9))
+#     y = int(random.randint(0, 9))
+
+#     for allows in board2.allowed_places_3:
+#         xo, yo = allows
+#         board2.allowed_places.add((x + xo, y + yo))
+#     if (x, y) in board2.forbiden_fields:
+
+#         continue
+#     if i == 1 and (x, y) not in board2.allowed_places:
+
+#         continue
+#     if i >= 2 and (x, y) not in board2.allowed_places:
+#         continue
+
+#     board2.state[y][x] = "3"
+#     board2.forbiden_fields.add((x, y))
+#     for offsets in board2.forbidden_offsets_3:
+#         xo, yo = offsets
+#         board2.forbiden_fields.add((x + xo, y + yo))
+#     board2.allowed_places = set()
+#     i += 1
+
+# i = 0
+# while i < 4:
+#     x = int(random.randint(0, 9))
+#     y = int(random.randint(0, 9))
+#     if (x, y) in board2.forbiden_fields:
+#         continue
+#     board2.state[y][x] = "4"
+#     board2.forbiden_fields.add((x, y))
+#     print(board2)
+#     i += 1
 print(board2)
