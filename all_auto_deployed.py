@@ -40,7 +40,7 @@ class Warship:
         self.is_sink = False
 
     def check_if_hit(self, shot_coordinates):
-        if shot_coordinates in self.coordintes and self.is_sink is False:
+        if shot_coordinates in self.coordinates and self.is_sink is False:
             print("warship is HIT")
             self.strength_of_ship -= 1
             if self.strength_of_ship == 0:
@@ -689,29 +689,44 @@ def next_cannon_volley(player):
 
 def cannon_volley(player):
     print("cannon_volley")
-    x = int(input("set x cannon_volley buum (0-9):  "))
-    y = int(input("set y cannon_volley buum (0-9):  "))
-    if board2.state[y][x] == "_":
-        print(" missed gun fire  ")
-        board3.state[y][x] = "m"
+    while True:
+        x = int(input("set x cannon_volley buum (0-9):  "))
+        y = int(input("set y cannon_volley buum (0-9):  "))
+        if board3.state[y][x] == "h" or board2.state[y][x] == "s":
+            print(" missed gun fire  ")
+            continue
+        if board3.state[y][x] == "_":
+            print(" missed gun fire  ")
+            board3.state[y][x] = "m"
 
-    if board2.state[y][x] == "1":
-        print("a single-masted ship hit and sunk")
-        board2.state[y][x] = "s"
-        board3.state[y][x] = "s"
-        player.number_of_hits += 1
-    if board2.state[y][x] == "2":
-        print("warship hitted")
-        board3.state[y][x] = "h"
-        player.number_of_hits += 1
-    if board2.state[y][x] == "3":
-        print("warship hitted")
-        board3.state[y][x] = "h"
-        player.number_of_hits += 1
-    if board2.state[y][x] == "4":
-        print("warship hitted")
-        board3.state[y][x] = "h"
-        player.number_of_hits += 1
+        for warship in computer_warships:
+            if warship.check_if_hit((x, y)):
+                board3.state[y][x] = "h"
+                if warship.is_sink:
+                    for single_coordinate in warship.coordinates:
+                        x_, y_ = single_coordinate
+                        board3.state[y_][x_] = "s"
+                        player.number_of_hits += 1
+        print(board3)
+        print("Human view of the targets ")
+
+    # if board2.state[y][x] == "1":
+    #     print("a single-masted ship hit and sunk")
+    #     board2.state[y][x] = "s"
+    #     board3.state[y][x] = "s"
+    #     player.number_of_hits += 1
+    # if board2.state[y][x] == "2":
+    #     print("warship hitted")
+    #     board3.state[y][x] = "h"
+    #     player.number_of_hits += 1
+    # if board2.state[y][x] == "3":
+    #     print("warship hitted")
+    #     board3.state[y][x] = "h"
+    #     player.number_of_hits += 1
+    # if board2.state[y][x] == "4":
+    #     print("warship hitted")
+    #     board3.state[y][x] = "h"
+    #     player.number_of_hits += 1
     print(board3)
     print("Human view of the targets ")
 
@@ -741,15 +756,16 @@ def main_game_file():
     human_player = Player(player)
     computer_player = Player("computer")
     number_of_turns = 0
-    a = random.randint(1, 2)
-    if a == 1:
-        print(f"Started: { human_player.name} next - computer")
-        cannon_volley(human_player)
-        number_of_turns += 1
-    if a == 2:
-        print(f"Started  computer: next { human_player.name} ")
-        first_cannon_volley(computer_player)
-        number_of_turns += 2
+    while True:
+        a = random.randint(1, 2)
+        if a == 1 or a == 2:
+            print(f"Started: { human_player.name} next - computer")
+            cannon_volley(human_player)
+            number_of_turns += 1
+        if a == 3:
+            print(f"Started  computer: next { human_player.name} ")
+            first_cannon_volley(computer_player)
+            number_of_turns += 2
     # next_run_game_file()
     # else:
     #     print("Human to Human")
