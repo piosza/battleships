@@ -234,6 +234,7 @@ class Board:
             (10, -1),
             (10, 0),
         }
+        self.forbidden_offsets_rest = {(-1, -1), (+1, -1), (+1, +1), (-1, +1)}
         self.state = [["_" for i in range(10)] for j in range(10)]
 
     def __str__(self):
@@ -597,6 +598,14 @@ def computer_cannon_volley(player):
                 board4.forbiden_fields.add((x, y))
                 player.number_of_hits += 1
                 for offsets in board1.forbidden_offsets_1:
+                    xo, yo = offsets
+                    board4.forbiden_fields.add((x + xo, y + yo))
+            if (
+                board1.state[y][x] == "2"
+                or board1.state[y][x] == "3"
+                or board1.state[y][x] == "4"
+            ):
+                for offsets in board1.forbidden_offsets_rest:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
 
