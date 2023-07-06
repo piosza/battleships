@@ -600,6 +600,11 @@ def computer_cannon_volley(player):
                 for offsets in board1.forbidden_offsets_1:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
+                img = cv2.imread("hit.jpg", cv2.IMREAD_ANYCOLOR)
+                while True:
+                    cv2.imshow("hit.jpg", img)
+                    cv2.waitKey(0)
+                    break
             if (
                 board1.state[y][x] == "2"
                 or board1.state[y][x] == "3"
@@ -608,7 +613,11 @@ def computer_cannon_volley(player):
                 for offsets in board1.forbidden_offsets_rest:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
-
+                img = cv2.imread("hit.jpg", cv2.IMREAD_ANYCOLOR)
+                while True:
+                    cv2.imshow("hit.jpg", img)
+                    cv2.waitKey(0)
+                    break
             for warship in human_warships:
                 if warship.check_if_hit((x, y)):
                     board4.forbiden_fields.add((x, y))
@@ -619,6 +628,11 @@ def computer_cannon_volley(player):
                             board4.state[y_][x_] = "s"
                             player.number_of_hits += 1
                             print(x_, y_)
+                            # img = cv2.imread("sunk.jpg", cv2.IMREAD_ANYCOLOR)
+                            # while True:
+                            #     cv2.imshow("sunk.jpg", img)
+                            #     cv2.waitKey(0)
+                            #     break
             #            print(board4)
             time.sleep(0.5)
             print("computer view of the targets ")
