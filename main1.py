@@ -13,18 +13,19 @@ os.system("cls")
 
 
 print("<<<<  Game Batlleship   >>>>")
-# im = Image.open("zaglowce.jpg")
-# im.show()
 
-img = cv2.imread("zaglowce.jpg", cv2.IMREAD_ANYCOLOR)
 
-while True:
-    cv2.imshow("zaglowce.jpg", img)
-    cv2.waitKey(0)
-    break
+def show_picture(picture_name):
+    img = cv2.imread(picture_name, cv2.IMREAD_ANYCOLOR)
+    while True:
+        cv2.imshow(picture_name, img)
+        cv2.waitKey(0)
+        break
+
+
+show_picture("zaglowce.jpg")
+
 #    sys.exit()  # to exit from all the processes
-
-cv2.destroyAllWindows()  # destroy all windows
 
 
 class Player:
@@ -586,8 +587,8 @@ def receive_attack(self, coordinates):
 def computer_cannon_volley(player):
     while True:
         if player.number_of_hits <= 20:
-            x = int(random.randint(0, 9))
-            y = int(random.randint(0, 9))
+            x = random.randint(0, 9)
+            y = random.randint(0, 9)
 
             if (x, y) in board4.forbiden_fields:
                 continue
@@ -600,11 +601,7 @@ def computer_cannon_volley(player):
                 for offsets in board1.forbidden_offsets_1:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
-                img = cv2.imread("hit.jpg", cv2.IMREAD_ANYCOLOR)
-                while True:
-                    cv2.imshow("hit.jpg", img)
-                    cv2.waitKey(0)
-                    break
+                show_picture("hit.jpg")
             if (
                 board1.state[y][x] == "2"
                 or board1.state[y][x] == "3"
@@ -613,11 +610,7 @@ def computer_cannon_volley(player):
                 for offsets in board1.forbidden_offsets_rest:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
-                img = cv2.imread("hit.jpg", cv2.IMREAD_ANYCOLOR)
-                while True:
-                    cv2.imshow("hit.jpg", img)
-                    cv2.waitKey(0)
-                    break
+                show_picture("hit.jpg")
             for warship in human_warships:
                 if warship.check_if_hit((x, y)):
                     board4.forbiden_fields.add((x, y))
@@ -720,11 +713,22 @@ def computer_cannon_volley(player):
 #         player.number_of_hits += 1
 
 
+def number_range(start, stop, message):
+    while True:
+        try:
+            a = int(input(message))
+        except ValueError:
+            continue
+
+        if a in range(start, stop + 1):  # must be 10
+            break
+
+
 def cannon_volley(player):
     print("cannon_volley")
+    x = number_range(0, 9, "set x cannon volley bum (0, 9)")
+    y = number_range(0, 9, "set y cannon volley bum (0, 9)")
     while True:
-        x = int(input("set x cannon_volley buum (0-9):  "))
-        y = int(input("set y cannon_volley buum (0-9):  "))
         if (
             board3.state[y][x] == "h"
             or board3.state[y][x] == "s"
