@@ -585,10 +585,14 @@ def receive_attack(self, coordinates):
 
 
 def computer_cannon_volley(player):
+    allowed_shots = []
     while True:
         if player.number_of_hits <= 20:
-            x = random.randint(0, 9)
-            y = random.randint(0, 9)
+            if not allowed_shots:
+                x = random.randint(0, 9)
+                y = random.randint(0, 9)
+            else:
+                x, y = allowed_shots.pop
 
             if (x, y) in board4.forbiden_fields:
                 continue
@@ -611,6 +615,9 @@ def computer_cannon_volley(player):
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
                 show_picture("hit.jpg")
+
+            #               for potential_target in board4.potential_targets_2:
+
             for warship in human_warships:
                 if warship.check_if_hit((x, y)):
                     board4.forbiden_fields.add((x, y))

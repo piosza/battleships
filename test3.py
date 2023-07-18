@@ -581,10 +581,10 @@ def receive_attack(self, coordinates):
     if self.state[y][x] == "_":
         print(" missed gun fire  ")
     else:
-        print("warship hitted")
+        print(" warship hitted ")
 
 
-def computer_cannon_volley(player):
+def computer_cannon_volley(player, hited_h):
     while True:
         if player.number_of_hits <= 20:
             x = random.randint(0, 9)
@@ -598,6 +598,8 @@ def computer_cannon_volley(player):
                 board4.state[y][x] = "s"
                 board4.forbiden_fields.add((x, y))
                 player.number_of_hits += 1
+                hited_h += 1
+
                 for offsets in board1.forbidden_offsets_1:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
@@ -607,6 +609,8 @@ def computer_cannon_volley(player):
                 or board1.state[y][x] == "3"
                 or board1.state[y][x] == "4"
             ):
+                hited_h += 1
+
                 for offsets in board1.forbidden_offsets_rest:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
@@ -628,8 +632,8 @@ def computer_cannon_volley(player):
                             #     break
             #            print(board4)
             time.sleep(0.5)
-            print("computer view of the targets ")
             break
+    return hited_h
 
 
 # def computer_cannon_volley(player):
@@ -724,7 +728,7 @@ def number_range(start, stop, message):
             return a
 
 
-def cannon_volley(player):
+def cannon_volley(player, hited_h, hited_c):
     print("cannon_volley")
     x = number_range(0, 9, "set x cannon volley bum (0, 9)")
     y = number_range(0, 9, "set y cannon volley bum (0, 9)")
@@ -744,6 +748,7 @@ def cannon_volley(player):
             if warship.check_if_hit((x, y)):
                 board3.state[y][x] = "h"
                 print("warship is hit")
+                hited_c += 1
                 if warship.is_sink:
                     for single_coordinate in warship.coordinates:
                         x_, y_ = single_coordinate
@@ -752,14 +757,10 @@ def cannon_volley(player):
                         print("warship is sink")
         print(board3)
         print("Human view of the targets ")
+        print("computer hits human :  ", hited_h)
+        print("human hits computer :  ", hited_c)
         break
-
-
-def who_win_the_game(hited_c, hited_h):
-    if hited_c == 20:
-        print("computer win")
-    elif hited_h == 20:
-        print("sea wolf congratulations victory is yours")
+    return hited_c
 
 
 who_first = random.choice(("Comp", "Human"))
@@ -772,7 +773,7 @@ print(" Now we begin the battle of ships")
 #             receive_attack()
 #         if placement == "Human":
 #             cannon_volley()
-number_of_turns = 0
+# number_of_turns = 0
 
 
 def main_game_file():
@@ -780,31 +781,38 @@ def main_game_file():
     human_player = Player(player)
     computer_player = Player("computer")
     number_of_turns = 0
+    hited_c = 0
+    hited_h = 0
+
     while True:
+        if who_win_the_game(hited_c, hited_h, human_player):
+            print("game is finish")
+            break
+
         # a = random.randint(3, 4)
         # if a == 1 or a == 2:
         if number_of_turns % 2 == 1:
             print(f"Started: { human_player.name} next - computer")
-            cannon_volley(human_player)
+            hited_c = cannon_volley(human_player, hited_h, hited_c)
             number_of_turns += 1
         # if a == 3 or a == 4:
         else:
             print(f"Started  computer: next { human_player.name} ")
-            computer_cannon_volley(computer_player)
+            hited_h = computer_cannon_volley(computer_player, hited_c)
             number_of_turns += 1
-        print(number_of_turns)
-    # next_run_game_file()
-    # else:
-    #     print("Human to Human")
+        print("number of turns", number_of_turns)
+    return human_player
 
 
-# def next_run_game_file(hited_c, hited_h):
-#     while True:
-#         if hited_c <= 20 or hited_h <= 20:
-#             if number_of_turns % 2 == 0:
-#                 cannon_volley(player)
-#             else:
-#                 next_cannon_volley(player)
+def who_win_the_game(hited_c, hited_h, human_player):
+    if hited_h == 20:
+        print("computer win")
+        return True
+
+    if hited_c == 20:
+        print(f"{ human_player.name}  sea wolf congratulations victory is yours")
+        return True
+    return False
 
 
 main_game_file()
