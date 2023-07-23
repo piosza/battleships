@@ -592,8 +592,12 @@ def computer_cannon_volley(player):
                 x = random.randint(0, 9)
                 y = random.randint(0, 9)
             else:
-                x, y = allowed_shots.pop
-
+                x, y = allowed_shots.pop()
+                while True:
+                    if x in range(0, 9) and y in range(0, 9):
+                        break
+                    else:
+                        x, y = allowed_shots.pop()
             if (x, y) in board4.forbiden_fields:
                 continue
             if board1.state[y][x] == "_":
@@ -628,6 +632,10 @@ def computer_cannon_volley(player):
                             board4.state[y_][x_] = "s"
                             player.number_of_hits += 1
                             print(x_, y_)
+                    else:
+                        for shuts in board4.potential_targets_2:
+                            xo, yo = shuts
+                            allowed_shots.append((x + xo, y + yo))
                             # img = cv2.imread("sunk.jpg", cv2.IMREAD_ANYCOLOR)
                             # while True:
                             #     cv2.imshow("sunk.jpg", img)
@@ -759,6 +767,7 @@ def cannon_volley(player):
                         print("warship is sink")
         print(board3)
         print("Human view of the targets ")
+        print(board4)
         break
 
 
@@ -787,31 +796,38 @@ def main_game_file():
     human_player = Player(player)
     computer_player = Player("computer")
     number_of_turns = 0
+    hited_c = 0
+    hited_h = 0
+
     while True:
+        if who_win_the_game(hited_c, hited_h, human_player):
+            print("game is finish")
+            break
+
         # a = random.randint(3, 4)
         # if a == 1 or a == 2:
         if number_of_turns % 2 == 1:
             print(f"Started: { human_player.name} next - computer")
-            cannon_volley(human_player)
+            hited_c = cannon_volley(human_player, hited_h, hited_c)
             number_of_turns += 1
         # if a == 3 or a == 4:
         else:
             print(f"Started  computer: next { human_player.name} ")
-            computer_cannon_volley(computer_player)
+            hited_h = computer_cannon_volley(computer_player, hited_c)
             number_of_turns += 1
-        print(number_of_turns)
-    # next_run_game_file()
-    # else:
-    #     print("Human to Human")
+        print("number of turns", number_of_turns)
+    return human_player
 
 
-# def next_run_game_file(hited_c, hited_h):
-#     while True:
-#         if hited_c <= 20 or hited_h <= 20:
-#             if number_of_turns % 2 == 0:
-#                 cannon_volley(player)
-#             else:
-#                 next_cannon_volley(player)
+def who_win_the_game(hited_c, hited_h, human_player):
+    if hited_h == 20:
+        print("computer win")
+        return True
+
+    if hited_c == 20:
+        print(f"{ human_player.name}  sea wolf congratulations victory is yours")
+        return True
+    return False
 
 
 main_game_file()

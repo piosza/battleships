@@ -13,18 +13,19 @@ os.system("cls")
 
 
 print("<<<<  Game Batlleship   >>>>")
-# im = Image.open("zaglowce.jpg")
-# im.show()
 
-img = cv2.imread("zaglowce.jpg", cv2.IMREAD_ANYCOLOR)
 
-while True:
-    cv2.imshow("zaglowce.jpg", img)
-    cv2.waitKey(0)
-    break
+def show_picture(picture_name):
+    img = cv2.imread(picture_name, cv2.IMREAD_ANYCOLOR)
+    while True:
+        cv2.imshow(picture_name, img)
+        cv2.waitKey(0)
+        break
+
+
+show_picture("zaglowce.jpg")
+
 #    sys.exit()  # to exit from all the processes
-
-cv2.destroyAllWindows()  # destroy all windows
 
 
 class Player:
@@ -580,14 +581,14 @@ def receive_attack(self, coordinates):
     if self.state[y][x] == "_":
         print(" missed gun fire  ")
     else:
-        print("warship hitted")
+        print(" warship hitted ")
 
 
-def computer_cannon_volley(player):
+def computer_cannon_volley(player, hited_h):
     while True:
         if player.number_of_hits <= 20:
-            x = int(random.randint(0, 9))
-            y = int(random.randint(0, 9))
+            x = random.randint(0, 9)
+            y = random.randint(0, 9)
 
             if (x, y) in board4.forbiden_fields:
                 continue
@@ -597,18 +598,23 @@ def computer_cannon_volley(player):
                 board4.state[y][x] = "s"
                 board4.forbiden_fields.add((x, y))
                 player.number_of_hits += 1
+                hited_h += 1
+
                 for offsets in board1.forbidden_offsets_1:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
+                show_picture("hit.jpg")
             if (
                 board1.state[y][x] == "2"
                 or board1.state[y][x] == "3"
                 or board1.state[y][x] == "4"
             ):
+                hited_h += 1
+
                 for offsets in board1.forbidden_offsets_rest:
                     xo, yo = offsets
                     board4.forbiden_fields.add((x + xo, y + yo))
-
+                show_picture("hit.jpg")
             for warship in human_warships:
                 if warship.check_if_hit((x, y)):
                     board4.forbiden_fields.add((x, y))
@@ -619,9 +625,15 @@ def computer_cannon_volley(player):
                             board4.state[y_][x_] = "s"
                             player.number_of_hits += 1
                             print(x_, y_)
-            print(board4)
+                            # img = cv2.imread("sunk.jpg", cv2.IMREAD_ANYCOLOR)
+                            # while True:
+                            #     cv2.imshow("sunk.jpg", img)
+                            #     cv2.waitKey(0)
+                            #     break
+            #            print(board4)
             time.sleep(0.5)
-            print("computer view of the targets ")
+            break
+    return hited_h
 
 
 # def computer_cannon_volley(player):
@@ -705,14 +717,29 @@ def computer_cannon_volley(player):
 #         player.number_of_hits += 1
 
 
-def cannon_volley(player):
-    print("cannon_volley")
+def number_range(start, stop, message):
     while True:
-        x = int(input("set x cannon_volley buum (0-9):  "))
-        y = int(input("set y cannon_volley buum (0-9):  "))
-        if board3.state[y][x] == "h" or board3.state[y][x] == "s":
-            print(" missed gun fire  ")
+        try:
+            a = int(input(message))
+        except ValueError:
             continue
+
+        if a in range(start, stop + 1):  # must be 10
+            return a
+
+
+def cannon_volley(player, hited_h, hited_c):
+    print("cannon_volley")
+    x = number_range(0, 9, "set x cannon volley bum (0, 9)")
+    y = number_range(0, 9, "set y cannon volley bum (0, 9)")
+    while True:
+        if (
+            board3.state[y][x] == "h"
+            or board3.state[y][x] == "s"
+            or board3.state[y][x] == "m"
+        ):
+            print(" missed gun fire  ")
+            break
         if board3.state[y][x] == "_":
             print(" missed gun fire  ")
             board3.state[y][x] = "m"
@@ -720,20 +747,20 @@ def cannon_volley(player):
         for warship in computer_warships:
             if warship.check_if_hit((x, y)):
                 board3.state[y][x] = "h"
+                print("warship is hit")
+                hited_c += 1
                 if warship.is_sink:
                     for single_coordinate in warship.coordinates:
                         x_, y_ = single_coordinate
                         board3.state[y_][x_] = "s"
                         player.number_of_hits += 1
+                        print("warship is sink")
         print(board3)
         print("Human view of the targets ")
-
-
-def who_win_the_game(hited_c, hited_h):
-    if hited_c == 20:
-        print("computer win")
-    elif hited_h == 20:
-        print("sea wolf congratulations victory is yours")
+        print("computer hits human :  ", hited_h)
+        print("human hits computer :  ", hited_c)
+        break
+    return hited_c
 
 
 who_first = random.choice(("Comp", "Human"))
@@ -746,7 +773,7 @@ print(" Now we begin the battle of ships")
 #             receive_attack()
 #         if placement == "Human":
 #             cannon_volley()
-number_of_turns = 0
+# number_of_turns = 0
 
 
 def main_game_file():
@@ -754,28 +781,38 @@ def main_game_file():
     human_player = Player(player)
     computer_player = Player("computer")
     number_of_turns = 0
+    hited_c = 0
+    hited_h = 0
+
     while True:
-        a = random.randint(3, 4)
-        if a == 1 or a == 2:
+        if who_win_the_game(hited_c, hited_h, human_player):
+            print("game is finish")
+            break
+
+        # a = random.randint(3, 4)
+        # if a == 1 or a == 2:
+        if number_of_turns % 2 == 1:
             print(f"Started: { human_player.name} next - computer")
-            cannon_volley(human_player)
+            hited_c = cannon_volley(human_player, hited_h, hited_c)
             number_of_turns += 1
-        if a == 3 or a == 4:
+        # if a == 3 or a == 4:
+        else:
             print(f"Started  computer: next { human_player.name} ")
-            computer_cannon_volley(computer_player)
-            number_of_turns += 2
-    # next_run_game_file()
-    # else:
-    #     print("Human to Human")
+            hited_h = computer_cannon_volley(computer_player, hited_c)
+            number_of_turns += 1
+        print("number of turns", number_of_turns)
+    return human_player
 
 
-# def next_run_game_file(hited_c, hited_h):
-#     while True:
-#         if hited_c <= 20 or hited_h <= 20:
-#             if number_of_turns % 2 == 0:
-#                 cannon_volley(player)
-#             else:
-#                 next_cannon_volley(player)
+def who_win_the_game(hited_c, hited_h, human_player):
+    if hited_h == 20:
+        print("computer win")
+        return True
+
+    if hited_c == 20:
+        print(f"{ human_player.name}  sea wolf congratulations victory is yours")
+        return True
+    return False
 
 
 main_game_file()
