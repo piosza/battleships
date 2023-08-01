@@ -29,9 +29,13 @@ show_picture("zaglowce.jpg")
 
 
 class Player:
-    def __init__(self, name):
+    def __init__(
+        self,
+        name,
+    ):
         self.name = name
         self.number_of_hits = 0
+        self.allowed_shots = []
 
 
 class Warship:
@@ -584,11 +588,15 @@ def receive_attack(self, coordinates):
         print(" warship hitted ")
 
 
-def computer_cannon_volley(player, hited_h):
+def computer_cannon_volley(player: Player, hited_h):
     while True:
         if player.number_of_hits <= 20:
-            x = random.randint(0, 9)
-            y = random.randint(0, 9)
+            if player.allowed_shots == []:
+                x = random.randint(0, 9)
+                y = random.randint(0, 9)
+            else:
+                x, y = random.choice(player.allowed_shots)
+                player.allowed_shots.remove((x, y))
 
             if (x, y) in board4.forbiden_fields:
                 continue
@@ -619,6 +627,9 @@ def computer_cannon_volley(player, hited_h):
                 if warship.check_if_hit((x, y)):
                     board4.forbiden_fields.add((x, y))
                     board4.state[y][x] = "h"
+                    if player.allowed_shots == []:
+                        player.allowed_shots.extend(warship.coordinates)
+                        player.allowed_shots.remove((x, y))
                     if warship.is_sink:
                         for single_coordinate in warship.coordinates:
                             x_, y_ = single_coordinate
@@ -634,87 +645,6 @@ def computer_cannon_volley(player, hited_h):
             time.sleep(0.5)
             break
     return hited_h
-
-
-# def computer_cannon_volley(player):
-#     if board4.state[y][x] == "h":
-#         for potential_target in board4.potential_targets_2:
-#             xo, yo = potential_target
-#             board4.potential_targets_2.add((x + xo, y + yo))
-#             x = int(random.randint(0, 9))
-#             y = int(random.randint(0, 9))
-#             if board4.state[y][x] in board4.potential_targets_2:
-#                 if board1.state[y][x] == "_":
-#                     board4.state[y][x] = "m"
-#                 if board1.state[y][x] == "1":
-#                     board4.state[y][x] = "s"
-#                     player.number_of_hits += 1
-#                     for offsets in board1.forbidden_offsets_1:
-#                         xo, yo = offsets
-#                     board4.forbiden_fields.add((x + xo, y + yo))
-#                     if board4.state[y][x] == "h":
-#                         player.number_of_hits += 1
-
-#     if board4.state[y][x] == "h" and board4.state[y][x] == "h":
-#         for potential_target in board4.potential_targets_3:
-#             xo, yo = potential_target
-#             board4.potential_targets_2.add((x + xo, y + yo))
-#             x = int(random.randint(0, 9))
-#             y = int(random.randint(0, 9))
-#             if board4.state[y][x] in board4.potential_targets_3:
-#                 if board1.state[y][x] == "_":
-#                     board4.state[y][x] = "m"
-#                 if board4.state[y][x] == "h":
-#                     player.number_of_hits += 1
-#                     if board4.state[y][x] == "h":
-#                         board4.state[y][x] = "s"
-
-#     if (
-#         board4.state[y][x] == "h"
-#         and board4.state[y][x] == "h"
-#         and board4.state[y][x] == "h"
-#     ):
-#         for potential_target in board4.potential_targets_4:
-#             xo, yo = potential_target
-#             board4.potential_targets_2.add((x + xo, y + yo))
-#             x = int(random.randint(0, 9))
-#             y = int(random.randint(0, 9))
-#             if board4.state[y][x] in board4.potential_targets_4:
-#                 if board1.state[y][x] == "_":
-#                     board4.state[y][x] = "m"
-#                     if board4.state[y][x] == "h":
-#                         player.number_of_hits += 1
-#                         if board4.state[y][x] == "h":
-#                             board4.state[y][x] = "s"
-
-#     else:
-#         x = int(random.randint(0, 9))
-#         y = int(random.randint(0, 9))
-#         board4.forbiden_fields.add((x, y))
-#         if board2.state[y][x] == "_":
-#             board4.state[y][x] = "m"
-#         if board2.state[y][x] == "1":
-#             board4.state[y][x] = "s"
-#             player.number_of_hits += 1
-#             for offsets in board1.forbidden_offsets_1:
-#                 xo, yo = offsets
-#             board4.forbiden_fields.add((x + xo, y + yo))
-#         else:
-#             board4.state[y][x] = "h"
-#             player.number_of_hits += 1
-
-#     board4.forbiden_fields.add((x, y))
-#     if board1.state[y][x] == "_":
-#         board4.state[y][x] = "m"
-#     if board1.state[y][x] == "1":
-#         board4.state[y][x] = "s"
-#         player.number_of_hits += 1
-#         for offsets in board1.forbidden_offsets_1:
-#             xo, yo = offsets
-#         board4.forbiden_fields.add((x + xo, y + yo))
-#     else:
-#         board4.state[y][x] == "h"
-#         player.number_of_hits += 1
 
 
 def number_range(start, stop, message):
@@ -759,6 +689,7 @@ def cannon_volley(player, hited_h, hited_c):
         print("Human view of the targets ")
         print("computer hits human :  ", hited_h)
         print("human hits computer :  ", hited_c)
+
         break
     return hited_c
 
@@ -767,13 +698,6 @@ who_first = random.choice(("Comp", "Human"))
 
 
 print(" Now we begin the battle of ships")
-
-# while hited_c <= 20 or hited_h <= 20:
-#         if placement == "Comp":
-#             receive_attack()
-#         if placement == "Human":
-#             cannon_volley()
-# number_of_turns = 0
 
 
 def main_game_file():
@@ -789,8 +713,6 @@ def main_game_file():
             print("game is finish")
             break
 
-        # a = random.randint(3, 4)
-        # if a == 1 or a == 2:
         if number_of_turns % 2 == 1:
             print(f"Started: { human_player.name} next - computer")
             hited_c = cannon_volley(human_player, hited_h, hited_c)
