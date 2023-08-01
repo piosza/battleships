@@ -1,10 +1,9 @@
 # main game code
 import random
 import os
-from PIL import Image
-import sys
-import cv2
 import time
+
+import cv2
 
 # from colorama import init, Fore, Back, Style
 
