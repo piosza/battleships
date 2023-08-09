@@ -1,11 +1,7 @@
-# main game code
 import random
 import os
 import time
-
 import cv2
-
-# from colorama import init, Fore, Back, Style
 
 
 os.system("cls")
@@ -23,8 +19,6 @@ def show_picture(picture_name):
 
 
 show_picture("zaglowce.jpg")
-
-#    sys.exit()  # to exit from all the processes
 
 
 class Player:
@@ -197,7 +191,6 @@ class Board:
             (0, +3),
             (-3, 0),
         }
-        #        self.forbiden_fields = set()
         self.forbiden_fields = {
             (-1, -1),
             (-1, 0),
@@ -265,18 +258,17 @@ human_warships = []
 
 board1 = Board()
 
-# print(board1)
 
 # ############################################## computer ###########################################################
-# #################################################################################################
 
 
 print("computer deployment of ships ")
+board1 = Board()
 board2 = Board()
 board4 = Board()
 board3 = Board()
 
-# 4
+# # 4
 
 i = 0
 while i < 1:
@@ -285,13 +277,7 @@ while i < 1:
     if placement == "Horizontal":
         x = int(random.randint(0, 6))
         y = int(random.randint(0, 9))
-        # if (x, y) in board2.forbiden_fields or (
-        #     x + 1,
-        #     x + 2,
-        #     x + 3,
-        #     y + 0,
-        # ) in board2.forbiden_fields:
-        #     continue
+
         board2.state[y][x] = "4"
         board2.state[y][x + 1] = "4"
         board2.state[y][x + 2] = "4"
@@ -299,7 +285,6 @@ while i < 1:
 
         ship = Warship(4, [(x, y), (x + 1, y), (x + 2, y), (x + 3, y)])
         computer_warships.append(ship)
-        #        Warship(4,coordintates=[(x,y),(x+1,y),(x+2,y),(x+3,y)])
         board2.forbiden_fields.add((x, y))
         for offsets in board2.forbidden_offsets_4_horizontal:
             xo, yo = offsets
@@ -402,7 +387,7 @@ while i < 3:
     i += 1
     print(board2)
 
-# # # 1
+# # 1
 
 i = 0
 while i < 4:
@@ -426,156 +411,331 @@ print(board2)
 # #################################################### HUMAN ###################################
 # 4
 
-i = 0
-while i < 1:
-    placement = random.choice(("Horizontal", "Vertical"))
 
-    if placement == "Horizontal":
-        x = int(random.randint(0, 6))
-        y = int(random.randint(0, 9))
-        # if (x, y) in board2.forbiden_fields or (
-        #     x + 1,
-        #     x + 2,
-        #     x + 3,
-        #     y + 0,
-        # ) in board2.forbiden_fields:
-        #     continue
-        board1.state[y][x] = "4"
-        board1.state[y][x + 1] = "4"
-        board1.state[y][x + 2] = "4"
-        board1.state[y][x + 3] = "4"
+def selection_game_file():
+    layout_selection = input(" 1 auto deployment , 2 human deployment >>>>> ")
+    if layout_selection == 1:
+        auto_deployment()
+    elif layout_selection == 2:
+        human_deployment()
 
-        ship = Warship(4, [(x, y), (x + 1, y), (x + 2, y), (x + 3, y)])
-        human_warships.append(ship)
-        #        Warship(4,coordintates=[(x,y),(x+1,y),(x+2,y),(x+3,y)])
-        board1.forbiden_fields.add((x, y))
-        for offsets in board1.forbidden_offsets_4_horizontal:
-            xo, yo = offsets
-            board1.forbiden_fields.add((x + xo, y + yo))
 
-    elif placement == "Vertical":
+def auto_deployment():
+    i = 0
+    while i < 1:
+        placement = random.choice(("Horizontal", "Vertical"))
+
+        if placement == "Horizontal":
+            x = int(random.randint(0, 6))
+            y = int(random.randint(0, 9))
+
+            board1.state[y][x] = "4"
+            board1.state[y][x + 1] = "4"
+            board1.state[y][x + 2] = "4"
+            board1.state[y][x + 3] = "4"
+
+            ship = Warship(4, [(x, y), (x + 1, y), (x + 2, y), (x + 3, y)])
+            human_warships.append(ship)
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_4_horizontal:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+
+        elif placement == "Vertical":
+            x = int(random.randint(0, 9))
+            y = int(random.randint(0, 6))
+            board1.state[y][x] = "4"
+            board1.state[y + 1][x + 0] = "4"
+            board1.state[y + 2][x + 0] = "4"
+            board1.state[y + 3][x + 0] = "4"
+            ship = Warship(4, [(x, y), (x, y + 1), (x, y + 2), (x, y + 3)])
+            human_warships.append(ship)
+            board1.forbiden_fields.add((x, y))
+
+            for offsets in board1.forbidden_offsets_4_vertical:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+
+        i += 1
+
+    # # 3
+
+    i = 0
+    while i < 2:
+        placement = random.choice(("Horizontal3", "Vertical3"))
+        if placement == "Horizontal3":
+            x = int(random.randint(0, 7))
+            y = int(random.randint(0, 9))
+            if (
+                (x, y) in board1.forbiden_fields
+                or (x + 1, y) in board1.forbiden_fields
+                or (x + 2, y) in board1.forbiden_fields
+                or (x + 3, y) in board1.forbiden_fields
+            ):
+                continue
+            board1.state[y][x] = "3"
+            board1.state[y][x + 1] = "3"
+            board1.state[y][x + 2] = "3"
+            ship = Warship(3, [(x, y), (x + 1, y), (x + 2, y)])
+            human_warships.append(ship)
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_3_h:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+        elif placement == "Vertical3":
+            x = int(random.randint(0, 9))
+            y = int(random.randint(0, 7))
+            if (
+                (x, y) in board1.forbiden_fields
+                or (x, y + 1) in board1.forbiden_fields
+                or (x, y + 2) in board1.forbiden_fields
+                or (x, y + 3) in board1.forbiden_fields
+            ):
+                continue
+            board1.state[y][x] = "3"
+            board1.state[y + 1][x + 0] = "3"
+            board1.state[y + 2][x + 0] = "3"
+            board1.forbiden_fields.add((x, y))
+            ship = Warship(3, [(x, y), (x, y + 1), (x, y + 2)])
+            human_warships.append(ship)
+            for offsets in board1.forbidden_offsets_3_v:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+
+        i += 1
+
+    # # 2
+
+    i = 0
+    while i < 3:
+        placement = random.choice(("Horizontal2", "Vertical2"))
+        if placement == "Horizontal2":
+            x = int(random.randint(0, 7))
+            y = int(random.randint(0, 7))
+            if (x, y) in board1.forbiden_fields or (
+                x + 1,
+                y,
+            ) in board1.forbiden_fields:
+                continue
+            board1.state[y][x] = "2"
+            board1.state[y][x + 1] = "2"
+            ship = Warship(2, [(x, y), (x + 1, y)])
+            human_warships.append(ship)
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_2_h:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+        elif placement == "Vertical2":
+            x = int(random.randint(0, 7))
+            y = int(random.randint(0, 7))
+            if (x, y) in board1.forbiden_fields or (
+                x,
+                y + 1,
+            ) in board1.forbiden_fields:
+                continue
+            board1.state[y][x] = "2"
+            board1.state[y + 1][x + 0] = "2"
+            ship = Warship(2, [(x, y), (x, y + 1)])
+            human_warships.append(ship)
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_2_v:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+        i += 1
+        print(board2)
+
+    # # # 1
+
+    i = 0
+    while i < 4:
         x = int(random.randint(0, 9))
-        y = int(random.randint(0, 6))
-        board1.state[y][x] = "4"
-        board1.state[y + 1][x + 0] = "4"
-        board1.state[y + 2][x + 0] = "4"
-        board1.state[y + 3][x + 0] = "4"
-        ship = Warship(4, [(x, y), (x, y + 1), (x, y + 2), (x, y + 3)])
-        human_warships.append(ship)
-        board1.forbiden_fields.add((x, y))
-
-        for offsets in board1.forbidden_offsets_4_vertical:
-            xo, yo = offsets
-            board1.forbiden_fields.add((x + xo, y + yo))
-
-    i += 1
-
-
-# # 3
-
-i = 0
-while i < 2:
-    placement = random.choice(("Horizontal3", "Vertical3"))
-    if placement == "Horizontal3":
-        x = int(random.randint(0, 7))
         y = int(random.randint(0, 9))
-        if (
-            (x, y) in board1.forbiden_fields
-            or (x + 1, y) in board1.forbiden_fields
-            or (x + 2, y) in board1.forbiden_fields
-            or (x + 3, y) in board1.forbiden_fields
-        ):
+        if (x, y) in board1.forbiden_fields:
             continue
-        board1.state[y][x] = "3"
-        board1.state[y][x + 1] = "3"
-        board1.state[y][x + 2] = "3"
-        ship = Warship(3, [(x, y), (x + 1, y), (x + 2, y)])
-        human_warships.append(ship)
+        board1.state[y][x] = "1"
         board1.forbiden_fields.add((x, y))
-        for offsets in board1.forbidden_offsets_3_h:
+        ship = Warship(1, [(x, y)])
+        human_warships.append(ship)
+        for offsets in board1.forbidden_offsets_1:
             xo, yo = offsets
             board1.forbiden_fields.add((x + xo, y + yo))
-    elif placement == "Vertical3":
-        x = int(random.randint(0, 9))
-        y = int(random.randint(0, 7))
-        if (
-            (x, y) in board1.forbiden_fields
-            or (x, y + 1) in board1.forbiden_fields
-            or (x, y + 2) in board1.forbiden_fields
-            or (x, y + 3) in board1.forbiden_fields
-        ):
+        i += 1
+
+
+def human_deployment():
+    print(board1)
+    print(" Now we begin the deployment of ships")
+    print("first step, four single-masted ships")
+    i = 0
+    while i < 4:
+        x = int(input("x(0-9):  "))
+        y = int(input("y(0-9):  "))
+        #    print(x,y,board1.forbidden_offsets_1)
+        if (x, y) in board1.forbiden_fields:
+            print("alredy used, or forbiden")
             continue
-        board1.state[y][x] = "3"
-        board1.state[y + 1][x + 0] = "3"
-        board1.state[y + 2][x + 0] = "3"
+
+        board1.state[y][x] = "1"
         board1.forbiden_fields.add((x, y))
-        ship = Warship(3, [(x, y), (x, y + 1), (x, y + 2)])
-        human_warships.append(ship)
-        for offsets in board1.forbidden_offsets_3_v:
+        for offsets in board1.forbidden_offsets_1:
             xo, yo = offsets
             board1.forbiden_fields.add((x + xo, y + yo))
+        print(x, y, board1.forbiden_fields)
+        i += 1
+        print(board1)
+        board1.allowed_places = set()
 
-    i += 1
+    print("First step ready")
+    print("   ")
+    print("second step , there double-masted ships  ")
+    i = 0
+    while i < 3:
+        x = int(input("x(0-9):  "))
+        y = int(input("y(0-9):  "))
+        placement = input("horizontal or vertical : h, v  >>   ")
+        if placement == "h":
+            if (x, y) in board1.forbiden_fields:
+                print("alredy used, or forbiden")
+                continue
+            elif (x + 1, y + 0) in board1.forbiden_fields:
+                print("alredy used, or forbiden")
+                continue
+            board1.state[y][x] = "2"
+            board1.forbiden_fields.add((x, y))
+            board1.state[y][x + 1] = "2"
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_2_h:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+        elif placement == "v":
+            if (x, y) in board1.forbiden_fields:
+                print("alredy used, or forbiden")
+                continue
+            elif (
+                (x + 0),
+                (y + 1),
+            ) in board1.forbiden_fields:
+                print("alredy used, or forbiden")
+                continue
+            board1.state[y][x] = "2"
+            board1.forbiden_fields.add((x, y))
+            board1.state[y + 1][x + 0] = "2"
+            board1.forbiden_fields.add((x + 0, y + 1))
+            for offsets in board1.forbidden_offsets_2_v:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
 
-# # 2
-
-i = 0
-while i < 3:
-    placement = random.choice(("Horizontal2", "Vertical2"))
-    if placement == "Horizontal2":
-        x = int(random.randint(0, 7))
-        y = int(random.randint(0, 7))
-        if (x, y) in board1.forbiden_fields or (x + 1, y) in board1.forbiden_fields:
+        else:
+            print("very bad choice")
             continue
-        board1.state[y][x] = "2"
-        board1.state[y][x + 1] = "2"
-        ship = Warship(2, [(x, y), (x + 1, y)])
-        human_warships.append(ship)
-        board1.forbiden_fields.add((x, y))
-        for offsets in board1.forbidden_offsets_2_h:
-            xo, yo = offsets
-            board1.forbiden_fields.add((x + xo, y + yo))
-    elif placement == "Vertical2":
-        x = int(random.randint(0, 7))
-        y = int(random.randint(0, 7))
-        if (x, y) in board1.forbiden_fields or (x, y + 1) in board1.forbiden_fields:
+        print(board1.forbiden_fields)
+
+        i += 1
+        print(board1)
+    print(board1.forbiden_fields)
+
+    print("third step, two three-masted ships")
+
+    i = 0
+    while i < 2:
+        x = int(input("x(0-9):  "))
+        y = int(input("y(0-9):  "))
+        placement = input("horizontal or vertical : h, v  >>   ")
+        if placement == "h":
+            if (
+                (x, y) in board1.forbiden_fields
+                or (x + 1) in board1.forbiden_fields
+                or (x + 2) in board1.forbiden_fields
+                or (y + 0) in board1.forbiden_fields
+            ):
+                print("alredy used, or forbiden")
+                continue
+            board1.state[y][x] = "3"
+            board1.state[y][x + 1] = "3"
+            board1.state[y][x + 2] = "3"
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_3_h:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+        elif placement == "v":
+            if (
+                (x, y) in board1.forbiden_fields
+                or (x + 0) in board1.forbiden_fields
+                or (y + 1) in board1.forbiden_fields
+                or (y + 2) in board1.forbiden_fields
+            ):
+                print("alredy used, or forbiden")
+                continue
+            board1.state[y][x] = "3"
+            board1.state[y + 1][x + 0] = "3"
+            board1.state[y + 2][x + 0] = "3"
+            board1.forbiden_fields.add((x, y))
+            for offsets in board1.forbidden_offsets_3_v:
+                xo, yo = offsets
+                board1.forbiden_fields.add((x + xo, y + yo))
+
+        else:
+            print("very bad choice")
             continue
-        board1.state[y][x] = "2"
-        board1.state[y + 1][x + 0] = "2"
-        ship = Warship(2, [(x, y), (x, y + 1)])
-        human_warships.append(ship)
-        board1.forbiden_fields.add((x, y))
-        for offsets in board1.forbidden_offsets_2_v:
-            xo, yo = offsets
-            board1.forbiden_fields.add((x + xo, y + yo))
-    i += 1
-    print(board2)
 
-# # # 1
+        i += 1
+        print(board1)
 
-i = 0
-while i < 4:
-    x = int(random.randint(0, 9))
-    y = int(random.randint(0, 9))
-    if (x, y) in board1.forbiden_fields:
-        continue
-    board1.state[y][x] = "1"
-    board1.forbiden_fields.add((x, y))
-    ship = Warship(1, [(x, y)])
-    human_warships.append(ship)
-    for offsets in board1.forbidden_offsets_1:
-        xo, yo = offsets
-        board1.forbiden_fields.add((x + xo, y + yo))
-    i += 1
+    print("last step, one four-masted ships")
 
-print("Computer board")
-print(board2)
-print("Human board")
-print(board1)
-print("board deployment ready !!")
-print("lets make sea battle")
+    i = 0
+    while i < 1:
+        x = int(input("x(0-9):  "))
+        y = int(input("y(0-9):  "))
+        placement = input("horizontal or vertical : h, v  >>   ")
+        if placement == "h":
+            if (x, y) in board1.forbiden_fields or (
+                x + 1,
+                x + 2,
+                x + 3,
+                y + 0,
+            ) in board1.forbiden_fields:
+                print("alredy used, or forbiden")
+                continue
+            board1.state[y][x] = "4"
+            board1.state[y][x + 1] = "4"
+            board1.state[y][x + 2] = "4"
+            board1.state[y][x + 3] = "4"
+            board1.forbiden_fields.add((x, y))
+
+        elif placement == "v":
+            if (x, y) in board1.forbiden_fields or (
+                x + 0,
+                y + 1,
+                y + 2,
+                y + 3,
+            ) in board1.forbiden_fields:
+                print("alredy used, or forbiden")
+                continue
+            board1.state[y][x] = "4"
+            board1.state[y + 1][x + 0] = "4"
+            board1.state[y + 2][x + 0] = "4"
+            board1.state[y + 3][x + 0] = "4"
+            board1.forbiden_fields.add((x, y))
+
+        else:
+            print("very bad choice")
+            continue
+
+        i += 1
+        print("board deployment ready !!")
+        print(board1)
+        print("lets make sea battle")
+
+        print("Computer board")
+        print(board2)
+        print("Human board")
+        print(board1)
+        print("board deployment ready !!")
+        print("lets make sea battle")
 
 
+selection_game_file()
 ############################################# GAME ######################################################
 
 
@@ -700,6 +860,7 @@ print(" Now we begin the battle of ships")
 
 
 def main_game_file():
+    print(board1)
     player = input(" player name, type here o  -->  ")
     human_player = Player(player)
     computer_player = Player("computer")
