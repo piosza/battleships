@@ -414,9 +414,9 @@ print(board2)
 
 def selection_game_file():
     layout_selection = input(" 1 auto deployment , 2 human deployment >>>>> ")
-    if layout_selection == 1:
+    if layout_selection == "1":
         auto_deployment()
-    elif layout_selection == 2:
+    elif layout_selection == "2":
         human_deployment()
 
 
